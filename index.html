@@ -1,12 +1,347 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Suno Prompt Builder</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SunoPrompt | Create &amp; Share Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#4d556b",
+              "surface-variant": "#192540",
+              "primary": "#ba9eff",
+              "on-tertiary-fixed-variant": "#701039",
+              "on-surface-variant": "#a3aac4",
+              "tertiary-dim": "#f0779d",
+              "tertiary-fixed-dim": "#f67ca3",
+              "background": "#060e20",
+              "on-secondary-fixed": "#003a45",
+              "on-secondary-container": "#ecfaff",
+              "error-container": "#a70138",
+              "surface": "#060e20",
+              "on-primary-container": "#2b006e",
+              "on-secondary": "#004b58",
+              "on-surface": "#dee5ff",
+              "secondary-dim": "#40ceed",
+              "primary-dim": "#8455ef",
+              "primary-fixed": "#ae8dff",
+              "on-error": "#490013",
+              "tertiary": "#ff97b5",
+              "error": "#ff6e84",
+              "secondary-fixed": "#65e1ff",
+              "secondary": "#53ddfc",
+              "surface-dim": "#060e20",
+              "primary-fixed-dim": "#a27cff",
+              "secondary-container": "#00687a",
+              "on-tertiary-container": "#59002a",
+              "inverse-primary": "#6e3bd7",
+              "tertiary-fixed": "#ff8eb0",
+              "error-dim": "#d73357",
+              "outline-variant": "#40485d",
+              "secondary-fixed-dim": "#48d4f3",
+              "on-tertiary": "#6a0934",
+              "on-primary": "#39008c",
+              "outline": "#6d758c",
+              "surface-container-high": "#141f38",
+              "on-primary-fixed": "#000000",
+              "surface-container": "#0f1930",
+              "on-error-container": "#ffb2b9",
+              "on-tertiary-fixed": "#380018",
+              "inverse-surface": "#faf8ff",
+              "surface-tint": "#ba9eff",
+              "on-primary-fixed-variant": "#370086",
+              "surface-container-highest": "#192540",
+              "on-secondary-fixed-variant": "#005969",
+              "on-background": "#dee5ff",
+              "tertiary-container": "#fd81a8",
+              "surface-container-low": "#091328",
+              "surface-bright": "#1f2b49",
+              "primary-container": "#ae8dff",
+              "surface-container-lowest": "#000000",
+            },
+            fontFamily: {
+              "headline": ["Lexend"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(25, 37, 64, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#060e20]/80 backdrop-blur-xl dark:bg-[#060e20]/80 shadow-[0_8px_32px_rgba(139,92,246,0.08)] bg-gradient-to-b from-[#ba9eff]/10 to-transparent">
+<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto font-['Lexend'] tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-[#ba9eff]">SunoPrompt</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">홈</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">탐색</a>
+<a class="text-[#ba9eff] border-b-2 border-[#ba9eff] pb-1" href="#">생성</a>
+<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">내 라이브러리</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-white/5 rounded-full transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400">notifications</span>
+</button>
+<button class="p-2 hover:bg-white/5 rounded-full transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400">person</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="flex-grow pt-24 pb-12 px-6 lg:px-12 max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Editor (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Header -->
+<header class="flex flex-col gap-2">
+<h1 class="text-4xl font-headline font-extrabold tracking-tighter text-on-surface">새 프롬프트 생성</h1>
+<p class="text-on-surface-variant font-body text-lg">당신의 음악적 비전을 가사로 변환하세요.</p>
+</header>
+<!-- Progress Stepper -->
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full w-fit">
+<div class="flex items-center gap-2 px-4 py-1.5 bg-primary/20 text-primary rounded-full font-label font-semibold text-sm"><span class="w-5 h-5 rounded-full bg-primary text-on-primary-container flex items-center justify-center text-[10px]">1</span> 프롬프트 텍스트</div>
+<div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant font-label text-sm opacity-60"><span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">2</span> 장르 및 태그</div>
+<div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant font-label text-sm opacity-60"><span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">3</span> 최종 세부 정보</div>
+</div>
+<!-- Main Editor Surface -->
+<div class="glass-panel border border-outline-variant/15 rounded-lg p-8 flex flex-col gap-6 shadow-2xl relative overflow-hidden">
+<!-- Background Glow Decor -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<label class="font-headline font-semibold text-xl flex items-center gap-2"><span class="material-symbols-outlined text-secondary">edit_note</span> 가사 / 프롬프트 내용</label>
+<span class="text-xs font-label text-on-surface-variant/60 uppercase tracking-widest">마크다운 지원</span>
+</div>
+<div class="relative group">
+<textarea class="w-full h-80 bg-surface-container-lowest/50 border-2 border-outline-variant/20 rounded-lg p-6 font-body text-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all resize-none placeholder:text-on-surface-variant/30" placeholder="[1절]
+2080년대의 네온 비 아래에서...
+안개 속으로 떠오르는 글리치 신스..."></textarea>
+<div class="absolute bottom-4 right-4 flex gap-2">
+<button class="bg-surface-container-highest px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-bright transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">magic_button</span> AI 다듬기</button>
+</div>
+</div>
+</div>
+<!-- Tags Section -->
+<div class="flex flex-col gap-4">
+<label class="font-headline font-semibold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-secondary">sell</span> 장르 및 스타일</label>
+<div class="flex flex-wrap gap-2" id="tagContainer">
+<button onclick="toggleTag(this)" class="tag-btn active px-5 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-sm font-medium border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all">신스웨이브</button>
+<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">로파이</button>
+<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">메탈</button>
+<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">사이버펑크</button>
+<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">몽환적인</button>
+<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">다크 테크노</button>
+<button onclick="addTag()" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-secondary/20 transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Optional Assets Area -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-dim">upload_file</span>
+<h3 class="font-headline font-bold">오디오 업로드</h3>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">커뮤니티가 당신의 영감을 들을 수 있도록 참조 클립을 추가하세요.</p>
+<button class="mt-2 w-full py-3 rounded-full border-2 border-dashed border-outline-variant/40 hover:border-primary-dim/60 hover:bg-primary/5 transition-all font-label text-sm">MP3 파일을 여기에 드롭하세요</button>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">link</span>
+<h3 class="font-headline font-bold">Suno 곡 링크</h3>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Suno AI URL을 붙여넣어 생성된 결과를 보여주세요.</p>
+<input class="mt-2 w-full bg-surface-container-lowest border border-outline-variant/30 rounded-full px-5 py-2.5 font-label text-sm focus:border-secondary focus:ring-0 outline-none" placeholder="https://suno.com/song/..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar (4 cols) -->
+<aside class="lg:col-span-4 flex flex-col gap-8">
+<div class="bg-surface-container rounded-lg p-8 border border-outline-variant/10 flex flex-col gap-8 shadow-xl">
+<div class="flex flex-col gap-6">
+<h2 class="text-2xl font-headline font-bold tracking-tight">게시 설정</h2>
+<!-- Title Input -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-label uppercase tracking-widest text-on-surface-variant">프롬프트 제목</label>
+<input class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg px-4 py-3 font-body focus:border-primary focus:ring-0 outline-none transition-all" placeholder="사이버네틱 세레나데" type="text"/>
+</div>
+<!-- Visibility Toggle -->
+<div class="flex items-center justify-between p-4 bg-surface-container-high rounded-lg">
+<div class="flex flex-col">
+<span class="font-headline font-semibold text-sm">공개 여부</span>
+<span class="text-xs text-on-surface-variant">커뮤니티에 공개됩니다</span>
+</div>
+<button id="toggleBtn" onclick="toggleVisibility()" class="w-12 h-6 bg-primary rounded-full relative flex items-center px-1 transition-all">
+<div id="toggleDot" class="w-4 h-4 bg-on-primary-container rounded-full ml-auto transition-all"></div>
+</button>
+</div>
+<!-- Options Grid -->
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-sm font-label"><span class="material-symbols-outlined text-[18px]">visibility</span> 미리보기</button>
+<button class="flex items-center justify-center gap-2 py-3 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-sm font-label"><span class="material-symbols-outlined text-[18px]">save</span> 임시 저장</button>
+</div>
+</div>
+<div class="h-px bg-outline-variant/10"></div>
+<!-- CTA Button -->
+<div class="flex flex-col gap-4">
+<button class="w-full py-5 bg-gradient-to-r from-primary to-primary-dim rounded-xl font-headline font-black text-on-primary-container text-lg shadow-[0_10px_40px_rgba(186,158,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all">커뮤니티에 공유하기</button>
+<p class="text-[10px] text-center text-on-surface-variant/50 font-label uppercase tracking-tighter">게시함으로써 귀하는 Sonic Nebula 약관에 동의하게 됩니다</p>
+</div>
+</div>
+<!-- Quick Tips Bento -->
+<div class="bg-secondary-container/10 border border-secondary/20 rounded-lg p-6 relative overflow-hidden group">
+<div class="absolute -bottom-4 -right-4 material-symbols-outlined text-7xl text-secondary/10 rotate-12 group-hover:rotate-0 transition-transform duration-500" style="font-variation-settings: 'FILL' 1;">lightbulb</div>
+<h4 class="font-headline font-bold text-secondary mb-2">음악 팁</h4>
+<p class="text-sm text-on-secondary-container leading-relaxed relative z-10">Suno AI 엔진이 프롬프트의 감정적 무게를 이해할 수 있도록 <span class="text-secondary font-bold">#거친</span> 또는 <span class="text-secondary font-bold">#미묘한</span>과 같은 구체적인 분위기 태그를 사용하세요.</p>
+</div>
+<!-- Preview Thumbnail Card -->
+<div class="bg-surface-container rounded-lg overflow-hidden border border-outline-variant/10 group cursor-pointer">
+<div class="h-48 relative bg-gradient-to-br from-[#0f1930] to-[#060e20] flex items-center justify-center overflow-hidden">
+  <svg class="w-full h-full absolute inset-0 opacity-60" viewBox="0 0 400 200" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#53ddfc;stop-opacity:0.6"/>
+        <stop offset="50%" style="stop-color:#ba9eff;stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:#ff97b5;stop-opacity:0.6"/>
+      </linearGradient>
+    </defs>
+    <g stroke="url(#waveGrad)" fill="none" stroke-width="1.5">
+      <path d="M0,100 Q20,60 40,100 Q60,140 80,100 Q100,60 120,100 Q140,140 160,100 Q180,60 200,100 Q220,140 240,100 Q260,60 280,100 Q300,140 320,100 Q340,60 360,100 Q380,140 400,100"/>
+      <path d="M0,100 Q20,40 40,100 Q60,160 80,100 Q100,40 120,100 Q140,160 160,100 Q180,40 200,100 Q220,160 240,100 Q260,40 280,100 Q300,160 320,100 Q340,40 360,100 Q380,160 400,100" opacity="0.5"/>
+      <path d="M0,100 Q20,80 40,100 Q60,120 80,100 Q100,80 120,100 Q140,120 160,100 Q180,80 200,100 Q220,120 240,100 Q260,80 280,100 Q300,120 320,100 Q340,80 360,100 Q380,120 400,100" opacity="0.3"/>
+    </g>
+    <rect x="0" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="10" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="20" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="30" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="40" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="50" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="60" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
+    <rect x="70" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="80" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="90" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="100" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="110" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="120" y="25" width="4" height="150" rx="2" fill="url(#waveGrad)" opacity="1"/>
+    <rect x="130" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="140" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="150" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="160" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="170" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="180" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="190" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="200" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
+    <rect x="210" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="220" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="230" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="240" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="250" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="260" y="25" width="4" height="150" rx="2" fill="url(#waveGrad)" opacity="1"/>
+    <rect x="270" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="280" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="290" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="300" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="310" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="320" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+    <rect x="330" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="340" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
+    <rect x="350" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
+    <rect x="360" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="370" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
+    <rect x="380" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
+    <rect x="390" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
+  </svg>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent pointer-events-none" style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to top, #0f1930, transparent)"></div>
+<div class="absolute bottom-4 left-4 flex items-center gap-2" style="position:absolute;bottom:1rem;left:1rem">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px] font-bold">신규</div>
+<span class="font-headline font-bold text-lg">카드 미리보기</span>
+</div>
+</div>
+<div class="p-4 space-y-2">
+<div class="h-2 w-2/3 bg-outline-variant/30 rounded-full"></div>
+<div class="h-2 w-1/2 bg-outline-variant/20 rounded-full"></div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-white/5 py-12 bg-[#060e20] dark:bg-[#060e20]">
+<div class="flex flex-col items-center gap-6 w-full px-8 font-['Inter'] text-xs tracking-wide uppercase">
+<div class="flex gap-8">
+<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">정보</a>
+<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">약관</a>
+<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">디스코드</a>
+<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">API</a>
+</div>
+<span class="font-bold text-[#53ddfc] text-xl tracking-tighter">SunoPrompt</span>
+<p class="text-slate-500 opacity-80">© 2024 SunoPrompt 커뮤니티. Suno AI에서 영감을 받았습니다.</p>
+</div>
+</footer>
+<script>
+  function toggleTag(btn) {
+    const isActive = btn.classList.contains('active');
+    if (isActive) {
+      btn.classList.remove('active', 'bg-secondary-container', 'text-on-secondary-container', 'border-secondary/30');
+      btn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/30');
+    } else {
+      btn.classList.add('active', 'bg-secondary-container', 'text-on-secondary-container', 'border-secondary/30');
+      btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/30');
+    }
+  }
+
+  function addTag() {
+    const label = prompt('새 태그 이름을 입력하세요:');
+    if (!label || !label.trim()) return;
+    const container = document.getElementById('tagContainer');
+    const addBtn = container.querySelector('button:last-child');
+    const newTag = document.createElement('button');
+    newTag.onclick = function() { toggleTag(this); };
+    newTag.className = 'tag-btn active px-5 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-sm font-medium border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all';
+    newTag.textContent = label.trim();
+    container.insertBefore(newTag, addBtn);
+  }
+
+  let isPublic = true;
+  function toggleVisibility() {
+    isPublic = !isPublic;
+    const btn = document.getElementById('toggleBtn');
+    const dot = document.getElementById('toggleDot');
+    if (isPublic) {
+      btn.classList.add('bg-primary');
+      btn.classList.remove('bg-outline-variant');
+      dot.classList.add('ml-auto');
+      dot.classList.remove('ml-0');
+    } else {
+      btn.classList.remove('bg-primary');
+      btn.classList.add('bg-outline-variant');
+      dot.classList.remove('ml-auto');
+      dot.classList.add('ml-0');
+    }
+  }
+</script>
+</body></html>
