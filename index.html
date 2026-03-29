@@ -1,347 +1,789 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="ko">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>SunoPrompt | Create &amp; Share Editor</title>
+<title>SunoPrompt | AI 음악 프롬프트 빌더</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "inverse-on-surface": "#4d556b",
-              "surface-variant": "#192540",
-              "primary": "#ba9eff",
-              "on-tertiary-fixed-variant": "#701039",
-              "on-surface-variant": "#a3aac4",
-              "tertiary-dim": "#f0779d",
-              "tertiary-fixed-dim": "#f67ca3",
-              "background": "#060e20",
-              "on-secondary-fixed": "#003a45",
-              "on-secondary-container": "#ecfaff",
-              "error-container": "#a70138",
-              "surface": "#060e20",
-              "on-primary-container": "#2b006e",
-              "on-secondary": "#004b58",
-              "on-surface": "#dee5ff",
-              "secondary-dim": "#40ceed",
-              "primary-dim": "#8455ef",
-              "primary-fixed": "#ae8dff",
-              "on-error": "#490013",
-              "tertiary": "#ff97b5",
-              "error": "#ff6e84",
-              "secondary-fixed": "#65e1ff",
-              "secondary": "#53ddfc",
-              "surface-dim": "#060e20",
-              "primary-fixed-dim": "#a27cff",
-              "secondary-container": "#00687a",
-              "on-tertiary-container": "#59002a",
-              "inverse-primary": "#6e3bd7",
-              "tertiary-fixed": "#ff8eb0",
-              "error-dim": "#d73357",
-              "outline-variant": "#40485d",
-              "secondary-fixed-dim": "#48d4f3",
-              "on-tertiary": "#6a0934",
-              "on-primary": "#39008c",
-              "outline": "#6d758c",
-              "surface-container-high": "#141f38",
-              "on-primary-fixed": "#000000",
-              "surface-container": "#0f1930",
-              "on-error-container": "#ffb2b9",
-              "on-tertiary-fixed": "#380018",
-              "inverse-surface": "#faf8ff",
-              "surface-tint": "#ba9eff",
-              "on-primary-fixed-variant": "#370086",
-              "surface-container-highest": "#192540",
-              "on-secondary-fixed-variant": "#005969",
-              "on-background": "#dee5ff",
-              "tertiary-container": "#fd81a8",
-              "surface-container-low": "#091328",
-              "surface-bright": "#1f2b49",
-              "primary-container": "#ae8dff",
-              "surface-container-lowest": "#000000",
-            },
-            fontFamily: {
-              "headline": ["Lexend"],
-              "body": ["Inter"],
-              "label": ["Inter"]
-            },
-            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{
+    colors:{
+      "primary":"#ba9eff","primary-dim":"#8455ef","on-primary":"#39008c","on-primary-container":"#2b006e",
+      "secondary":"#53ddfc","secondary-dim":"#40ceed","on-secondary":"#004b58",
+      "secondary-container":"#00687a","on-secondary-container":"#ecfaff",
+      "tertiary":"#ff97b5","background":"#060e20","surface":"#060e20","on-surface":"#dee5ff",
+      "on-surface-variant":"#a3aac4","outline-variant":"#40485d","outline":"#6d758c",
+      "surface-container-lowest":"#000000","surface-container-low":"#091328",
+      "surface-container":"#0f1930","surface-container-high":"#141f38",
+      "surface-container-highest":"#192540","surface-bright":"#1f2b49",
+    },
+    fontFamily:{"headline":["Lexend"],"body":["Inter"],"label":["Inter"]},
+    borderRadius:{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},
+  }},
+}
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .glass-panel {
-            background: rgba(25, 37, 64, 0.4);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle}
+  .glass-panel{background:rgba(25,37,64,0.4);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+  .page{display:none}.page.active{display:block}
+  .nav-link{padding-bottom:2px;border-bottom:2px solid transparent;transition:all .2s}
+  .nav-link.active{color:#ba9eff;border-bottom-color:#ba9eff}
+  .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 </head>
-<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen flex flex-col">
-<!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#060e20]/80 backdrop-blur-xl dark:bg-[#060e20]/80 shadow-[0_8px_32px_rgba(139,92,246,0.08)] bg-gradient-to-b from-[#ba9eff]/10 to-transparent">
-<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto font-['Lexend'] tracking-tight">
-<div class="flex items-center gap-8">
-<span class="text-2xl font-black tracking-tighter text-[#ba9eff]">SunoPrompt</span>
-<div class="hidden md:flex items-center gap-6">
-<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">홈</a>
-<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">탐색</a>
-<a class="text-[#ba9eff] border-b-2 border-[#ba9eff] pb-1" href="#">생성</a>
-<a class="text-slate-400 hover:text-slate-100 transition-colors" href="#">내 라이브러리</a>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 hover:bg-white/5 rounded-full transition-all active:scale-95 duration-200">
-<span class="material-symbols-outlined text-slate-400">notifications</span>
-</button>
-<button class="p-2 hover:bg-white/5 rounded-full transition-all active:scale-95 duration-200">
-<span class="material-symbols-outlined text-slate-400">person</span>
-</button>
-</div>
-</div>
+<body class="bg-background text-on-surface font-body min-h-screen flex flex-col">
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 bg-[#060e20]/90 backdrop-blur-xl border-b border-white/5">
+  <div class="flex justify-between items-center px-8 h-16 max-w-[1440px] mx-auto font-headline tracking-tight">
+    <div class="flex items-center gap-8">
+      <button onclick="navigate('home')" class="text-2xl font-black tracking-tighter text-primary">SunoPrompt</button>
+      <div class="hidden md:flex items-center gap-6 text-sm">
+        <button id="nav-home" onclick="navigate('home')" class="nav-link text-slate-400 hover:text-white">홈</button>
+        <button id="nav-explore" onclick="navigate('explore')" class="nav-link text-slate-400 hover:text-white">탐색</button>
+        <button id="nav-create" onclick="navigate('create')" class="nav-link text-slate-400 hover:text-white">생성</button>
+        <button id="nav-library" onclick="navigate('library')" class="nav-link text-slate-400 hover:text-white">내 라이브러리</button>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="p-2 hover:bg-white/5 rounded-full"><span class="material-symbols-outlined text-slate-400">notifications</span></button>
+      <button class="p-2 hover:bg-white/5 rounded-full"><span class="material-symbols-outlined text-slate-400">person</span></button>
+    </div>
+  </div>
 </nav>
-<main class="flex-grow pt-24 pb-12 px-6 lg:px-12 max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-<!-- Left Column: Editor (8 cols) -->
-<div class="lg:col-span-8 flex flex-col gap-6">
-<!-- Header -->
-<header class="flex flex-col gap-2">
-<h1 class="text-4xl font-headline font-extrabold tracking-tighter text-on-surface">새 프롬프트 생성</h1>
-<p class="text-on-surface-variant font-body text-lg">당신의 음악적 비전을 가사로 변환하세요.</p>
-</header>
-<!-- Progress Stepper -->
-<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full w-fit">
-<div class="flex items-center gap-2 px-4 py-1.5 bg-primary/20 text-primary rounded-full font-label font-semibold text-sm"><span class="w-5 h-5 rounded-full bg-primary text-on-primary-container flex items-center justify-center text-[10px]">1</span> 프롬프트 텍스트</div>
-<div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant font-label text-sm opacity-60"><span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">2</span> 장르 및 태그</div>
-<div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant font-label text-sm opacity-60"><span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">3</span> 최종 세부 정보</div>
+
+<!-- ═══════════════════ HOME ═══════════════════ -->
+<div id="page-home" class="page">
+  <!-- Hero -->
+  <section class="pt-36 pb-20 px-6 text-center relative overflow-hidden">
+    <div class="absolute top-20 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="absolute top-20 right-1/4 w-96 h-96 bg-secondary/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-8 text-primary text-xs font-label tracking-widest uppercase">
+        <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Suno AI 최적화 프롬프트 빌더
+      </div>
+      <h1 class="text-5xl lg:text-7xl font-headline font-black tracking-tighter mb-6 leading-[1.05]">
+        AI 음악의<br/>
+        <span style="background:linear-gradient(135deg,#ba9eff,#53ddfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent">완벽한 시작점</span>
+      </h1>
+      <p class="text-lg text-on-surface-variant max-w-2xl mx-auto mb-10 leading-relaxed">
+        장르, 분위기, 악기, 템포를 선택하면 Suno AI에 최적화된 프롬프트가 자동으로 생성됩니다.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="navigate('create')" class="px-8 py-4 bg-gradient-to-r from-primary to-primary-dim rounded-full font-headline font-black text-on-primary-container shadow-[0_10px_40px_rgba(186,158,255,0.3)] hover:scale-105 active:scale-95 transition-all">생성 시작하기</button>
+        <button onclick="navigate('explore')" class="px-8 py-4 bg-white/5 border border-outline-variant/40 rounded-full font-label hover:bg-white/10 transition-all">커뮤니티 탐색하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="px-6 max-w-2xl mx-auto mb-16">
+    <div class="grid grid-cols-3 gap-4">
+      <div class="text-center p-6 bg-surface-container rounded-lg border border-outline-variant/10">
+        <div class="text-3xl font-headline font-black text-primary mb-1">1,200+</div>
+        <div class="text-xs text-on-surface-variant uppercase tracking-widest">프롬프트</div>
+      </div>
+      <div class="text-center p-6 bg-surface-container rounded-lg border border-outline-variant/10">
+        <div class="text-3xl font-headline font-black text-secondary mb-1">800+</div>
+        <div class="text-xs text-on-surface-variant uppercase tracking-widest">사용자</div>
+      </div>
+      <div class="text-center p-6 bg-surface-container rounded-lg border border-outline-variant/10">
+        <div class="text-3xl font-headline font-black text-tertiary mb-1">50+</div>
+        <div class="text-xs text-on-surface-variant uppercase tracking-widest">장르</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured -->
+  <section class="px-6 lg:px-12 max-w-[1440px] mx-auto mb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-headline font-bold tracking-tight">인기 프롬프트</h2>
+      <button onclick="navigate('explore')" class="text-sm text-primary flex items-center gap-1 hover:opacity-80">모두 보기 <span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="home-featured"></div>
+  </section>
+
+  <!-- How it works -->
+  <section class="px-6 lg:px-12 max-w-[1440px] mx-auto mb-20">
+    <h2 class="text-2xl font-headline font-bold tracking-tight mb-8 text-center">어떻게 사용하나요?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10 text-center">
+        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"><span class="material-symbols-outlined text-primary text-2xl">tune</span></div>
+        <h3 class="font-headline font-bold text-lg mb-2">1. 옵션 선택</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">장르, 분위기, 악기, 템포 등 원하는 음악 요소를 클릭해서 선택하세요.</p>
+      </div>
+      <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10 text-center">
+        <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4"><span class="material-symbols-outlined text-secondary text-2xl">auto_awesome</span></div>
+        <h3 class="font-headline font-bold text-lg mb-2">2. 프롬프트 생성</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">선택한 옵션이 자동으로 Suno AI 최적화 프롬프트로 변환됩니다.</p>
+      </div>
+      <div class="bg-surface-container-low p-8 rounded-lg border border-outline-variant/10 text-center">
+        <div class="w-14 h-14 rounded-full bg-tertiary/10 flex items-center justify-center mx-auto mb-4"><span class="material-symbols-outlined text-tertiary text-2xl">music_note</span></div>
+        <h3 class="font-headline font-bold text-lg mb-2">3. Suno에 붙여넣기</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">복사 버튼을 누르고 Suno AI에 붙여넣으면 음악이 생성됩니다.</p>
+      </div>
+    </div>
+  </section>
 </div>
-<!-- Main Editor Surface -->
-<div class="glass-panel border border-outline-variant/15 rounded-lg p-8 flex flex-col gap-6 shadow-2xl relative overflow-hidden">
-<!-- Background Glow Decor -->
-<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
-<div class="flex flex-col gap-4">
-<div class="flex justify-between items-center">
-<label class="font-headline font-semibold text-xl flex items-center gap-2"><span class="material-symbols-outlined text-secondary">edit_note</span> 가사 / 프롬프트 내용</label>
-<span class="text-xs font-label text-on-surface-variant/60 uppercase tracking-widest">마크다운 지원</span>
+
+<!-- ═══════════════════ EXPLORE ═══════════════════ -->
+<div id="page-explore" class="page">
+  <main class="pt-24 pb-12 px-6 lg:px-12 max-w-[1440px] mx-auto">
+    <header class="mb-8">
+      <h1 class="text-4xl font-headline font-extrabold tracking-tighter mb-2">커뮤니티 탐색</h1>
+      <p class="text-on-surface-variant">다른 사용자들의 프롬프트를 발견하고 영감을 얻으세요.</p>
+    </header>
+    <div class="relative mb-6">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+      <input type="text" id="searchInput" oninput="renderExplore()" placeholder="프롬프트 검색..." class="w-full bg-surface-container border border-outline-variant/30 rounded-full pl-11 pr-5 py-3 text-sm focus:border-primary focus:ring-0 outline-none transition-all"/>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-8" id="genreFilterBar"></div>
+    <div id="exploreGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+    <div id="exploreEmpty" style="display:none" class="text-center py-24 text-on-surface-variant">
+      <span class="material-symbols-outlined text-5xl mb-4 block">search_off</span><p>검색 결과가 없습니다</p>
+    </div>
+  </main>
 </div>
-<div class="relative group">
-<textarea class="w-full h-80 bg-surface-container-lowest/50 border-2 border-outline-variant/20 rounded-lg p-6 font-body text-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all resize-none placeholder:text-on-surface-variant/30" placeholder="[1절]
-2080년대의 네온 비 아래에서...
-안개 속으로 떠오르는 글리치 신스..."></textarea>
-<div class="absolute bottom-4 right-4 flex gap-2">
-<button class="bg-surface-container-highest px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-bright transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">magic_button</span> AI 다듬기</button>
+
+<!-- ═══════════════════ CREATE ═══════════════════ -->
+<div id="page-create" class="page">
+  <main class="pt-24 pb-12 px-6 lg:px-12 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Left -->
+    <div class="lg:col-span-8 flex flex-col gap-6">
+      <header>
+        <h1 class="text-4xl font-headline font-extrabold tracking-tighter mb-1">새 프롬프트 생성</h1>
+        <p class="text-on-surface-variant text-lg">원하는 음악 요소를 선택하면 프롬프트가 자동으로 생성됩니다.</p>
+      </header>
+      <!-- Stepper -->
+      <div class="flex items-center gap-3 bg-surface-container-low p-2 rounded-full w-fit text-sm">
+        <div class="flex items-center gap-2 px-4 py-1.5 bg-primary/20 text-primary rounded-full font-label font-semibold">
+          <span class="w-5 h-5 rounded-full bg-primary text-on-primary-container flex items-center justify-center text-[10px]">1</span> 기본 설정
+        </div>
+        <div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant opacity-60">
+          <span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">2</span> 장르 및 분위기
+        </div>
+        <div class="flex items-center gap-2 px-4 py-1.5 text-on-surface-variant opacity-60">
+          <span class="w-5 h-5 rounded-full bg-outline-variant flex items-center justify-center text-[10px]">3</span> 세부 설정
+        </div>
+      </div>
+
+      <!-- Builder -->
+      <div class="glass-panel border border-outline-variant/15 rounded-lg p-8 flex flex-col gap-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <!-- 가사 유무 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🎤 가사 유무</div>
+          <div class="flex gap-3">
+            <button id="btn-lyrics-yes" onclick="setHasLyrics(true)"
+              class="px-5 py-2.5 rounded-lg text-sm border border-outline-variant/30 text-on-surface-variant bg-surface-container-highest hover:border-primary/50 transition-all">🎵 가사 있음</button>
+            <button id="btn-lyrics-no" onclick="setHasLyrics(false)"
+              class="px-5 py-2.5 rounded-lg text-sm border border-outline-variant/30 text-on-surface-variant bg-surface-container-highest hover:border-secondary/50 transition-all">🎸 인스트루멘탈</button>
+          </div>
+        </div>
+
+        <!-- 보컬 성별 -->
+        <div id="section-vocal-gender">
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">👤 보컬 성별</div>
+          <div class="flex gap-3">
+            <button id="btn-gender-male" onclick="setVocalGender('male')"
+              class="px-5 py-2.5 rounded-lg text-sm border border-outline-variant/30 text-on-surface-variant bg-surface-container-highest hover:border-primary/50 transition-all">♂ 남성</button>
+            <button id="btn-gender-female" onclick="setVocalGender('female')"
+              class="px-5 py-2.5 rounded-lg text-sm border border-outline-variant/30 text-on-surface-variant bg-surface-container-highest hover:border-primary/50 transition-all">♀ 여성</button>
+          </div>
+        </div>
+
+        <!-- 장르 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🎵 장르 / 스타일</div>
+          <div class="flex flex-wrap gap-2" id="genre-tags"></div>
+        </div>
+        <!-- 시대 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🕰️ 시대 / 레퍼런스</div>
+          <div class="flex flex-wrap gap-2" id="era-tags"></div>
+        </div>
+        <!-- 분위기 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🌙 분위기 / 감정</div>
+          <div class="flex flex-wrap gap-2" id="mood-tags"></div>
+        </div>
+        <!-- 템포 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">⏱️ 템포</div>
+          <div class="flex flex-wrap gap-2" id="tempo-tags"></div>
+        </div>
+        <!-- 악기 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🎸 악기</div>
+          <div id="instrument-sections" class="flex flex-col gap-4"></div>
+        </div>
+        <!-- 보컬 스타일 -->
+        <div id="section-vocal-style">
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🎙️ 보컬 스타일 / 창법</div>
+          <div class="flex flex-wrap gap-2" id="vocal-style-tags"></div>
+        </div>
+        <!-- 가사 언어 -->
+        <div id="section-language">
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🌍 가사 언어</div>
+          <div class="flex flex-wrap gap-2" id="language-tags"></div>
+        </div>
+        <!-- 프로덕션 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🔊 프로덕션 스타일</div>
+          <div class="flex flex-wrap gap-2" id="production-tags"></div>
+        </div>
+        <!-- 곡 구성 -->
+        <div>
+          <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">🎼 곡 구성</div>
+          <div class="flex flex-wrap gap-2" id="structure-tags"></div>
+        </div>
+
+        <div class="flex justify-end pt-2 border-t border-outline-variant/10">
+          <button onclick="resetAll()" class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-on-surface border border-outline-variant/30 rounded-lg px-4 py-2 transition-all">
+            <span class="material-symbols-outlined text-[16px]">restart_alt</span> 전체 초기화
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio + Link -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
+          <div class="flex items-center gap-3"><span class="material-symbols-outlined text-primary-dim">upload_file</span><h3 class="font-headline font-bold">오디오 업로드</h3></div>
+          <p class="text-sm text-on-surface-variant leading-relaxed">커뮤니티가 당신의 영감을 들을 수 있도록 참조 클립을 추가하세요.</p>
+          <button class="mt-2 w-full py-3 rounded-full border-2 border-dashed border-outline-variant/40 hover:border-primary-dim/60 hover:bg-primary/5 transition-all text-sm">MP3 파일을 여기에 드롭하세요</button>
+        </div>
+        <div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
+          <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">link</span><h3 class="font-headline font-bold">Suno 곡 링크</h3></div>
+          <p class="text-sm text-on-surface-variant leading-relaxed">Suno AI URL을 붙여넣어 생성된 결과를 보여주세요.</p>
+          <input class="mt-2 w-full bg-surface-container-lowest border border-outline-variant/30 rounded-full px-5 py-2.5 text-sm focus:border-secondary outline-none" placeholder="https://suno.com/song/..." type="text"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sticky Panel -->
+    <aside class="lg:col-span-4 flex flex-col gap-6">
+      <div class="bg-surface-container rounded-lg p-6 border border-outline-variant/10 shadow-xl" style="position:sticky;top:5rem">
+        <div class="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-4">GENERATED PROMPT</div>
+
+        <!-- Quality -->
+        <div class="flex justify-between mb-1.5 text-xs">
+          <span class="text-on-surface-variant">요소 수: <span id="word-count" class="text-gray-500 font-bold">0</span></span>
+          <span id="quality-label" class="text-gray-500">선택 없음</span>
+        </div>
+        <div class="h-1.5 bg-surface-container-highest rounded-full mb-5">
+          <div id="quality-bar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:#ef4444"></div>
+        </div>
+
+        <!-- Output -->
+        <div id="prompt-output" class="bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-4 min-h-[120px] mb-4 text-sm leading-relaxed" style="color:#4b5563;font-style:italic">
+          왼쪽에서 옵션을 선택하면<br/>프롬프트가 자동으로 생성됩니다
+        </div>
+
+        <button id="copy-btn" onclick="copyPrompt()" disabled
+          class="w-full py-3 rounded-lg font-label font-bold text-sm mb-3 transition-all"
+          style="background:#192540;color:#4b5563;cursor:default">📋 프롬프트 복사</button>
+
+        <button id="save-btn" onclick="saveToLibrary()" disabled
+          class="w-full py-3 rounded-lg font-label font-bold text-sm border border-outline-variant/20 transition-all"
+          style="background:#192540;color:#4b5563;cursor:default">🔖 라이브러리에 저장</button>
+
+        <div class="h-px bg-outline-variant/10 my-5"></div>
+
+        <!-- Publish Settings -->
+        <div class="flex flex-col gap-4">
+          <h2 class="text-base font-headline font-bold">게시 설정</h2>
+          <div>
+            <label class="text-xs font-label uppercase tracking-widest text-on-surface-variant block mb-1.5">프롬프트 제목</label>
+            <input id="prompt-title" class="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-lg px-4 py-2.5 text-sm focus:border-primary outline-none transition-all" placeholder="사이버네틱 세레나데" type="text"/>
+          </div>
+          <div class="flex items-center justify-between p-3.5 bg-surface-container-high rounded-lg">
+            <div>
+              <div class="font-headline font-semibold text-sm">공개 여부</div>
+              <div class="text-xs text-on-surface-variant">커뮤니티에 공개됩니다</div>
+            </div>
+            <button id="visibility-toggle" onclick="toggleVisibility()"
+              class="w-12 h-6 rounded-full relative flex items-center px-1 transition-all" style="background:#ba9eff">
+              <div id="visibility-dot" class="w-4 h-4 bg-on-primary-container rounded-full ml-auto transition-all"></div>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button class="flex items-center justify-center gap-1.5 py-2.5 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-xs">
+              <span class="material-symbols-outlined text-[16px]">visibility</span> 미리보기
+            </button>
+            <button class="flex items-center justify-center gap-1.5 py-2.5 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-xs">
+              <span class="material-symbols-outlined text-[16px]">save</span> 임시 저장
+            </button>
+          </div>
+        </div>
+
+        <div class="h-px bg-outline-variant/10 my-5"></div>
+        <button onclick="sharePrompt()" class="w-full py-4 bg-gradient-to-r from-primary to-primary-dim rounded-xl font-headline font-black text-on-primary-container shadow-[0_10px_40px_rgba(186,158,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all text-sm mb-2">커뮤니티에 공유하기</button>
+        <p class="text-[10px] text-center text-on-surface-variant/40 uppercase tracking-tighter">게시함으로써 귀하는 Sonic Nebula 약관에 동의하게 됩니다</p>
+      </div>
+
+      <!-- Tips -->
+      <div class="bg-secondary-container/10 border border-secondary/20 rounded-lg p-6 relative overflow-hidden group">
+        <div class="absolute -bottom-4 -right-4 material-symbols-outlined text-7xl text-secondary/10 rotate-12 group-hover:rotate-0 transition-transform duration-500" style="font-variation-settings:'FILL' 1">lightbulb</div>
+        <h4 class="font-headline font-bold text-secondary mb-3">💡 음악 팁</h4>
+        <ul class="text-sm text-on-secondary-container leading-relaxed space-y-1.5 relative z-10">
+          <li>• 최적 요소 수: <span class="text-secondary font-bold">4~7개</span></li>
+          <li>• 장르 1개 + 분위기 1~2개 조합 추천</li>
+          <li>• 악기는 2개 이하가 효과적</li>
+          <li>• 같은 프롬프트로 3~5회 생성 후 선택</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
 </div>
+
+<!-- ═══════════════════ LIBRARY ═══════════════════ -->
+<div id="page-library" class="page">
+  <main class="pt-24 pb-12 px-6 lg:px-12 max-w-[1440px] mx-auto">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-4xl font-headline font-extrabold tracking-tighter mb-2">내 라이브러리</h1>
+        <p class="text-on-surface-variant">저장된 프롬프트를 관리하세요.</p>
+      </div>
+      <button onclick="navigate('create')" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dim rounded-full font-label font-bold text-on-primary-container text-sm hover:scale-105 transition-all">
+        <span class="material-symbols-outlined text-[18px]">add</span> 새로 만들기
+      </button>
+    </header>
+    <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="library-empty" style="display:none" class="text-center py-32">
+      <span class="material-symbols-outlined text-6xl text-outline-variant mb-4 block">library_music</span>
+      <h3 class="font-headline font-bold text-xl mb-2">라이브러리가 비어있습니다</h3>
+      <p class="text-on-surface-variant mb-6">프롬프트를 생성하고 저장해보세요.</p>
+      <button onclick="navigate('create')" class="px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm hover:bg-primary/20 transition-all">첫 번째 프롬프트 만들기</button>
+    </div>
+  </main>
 </div>
-</div>
-<!-- Tags Section -->
-<div class="flex flex-col gap-4">
-<label class="font-headline font-semibold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-secondary">sell</span> 장르 및 스타일</label>
-<div class="flex flex-wrap gap-2" id="tagContainer">
-<button onclick="toggleTag(this)" class="tag-btn active px-5 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-sm font-medium border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all">신스웨이브</button>
-<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">로파이</button>
-<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">메탈</button>
-<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">사이버펑크</button>
-<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">몽환적인</button>
-<button onclick="toggleTag(this)" class="tag-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-medium border border-outline-variant/30 hover:border-secondary/50 transition-all">다크 테크노</button>
-<button onclick="addTag()" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-secondary/20 transition-all text-on-surface-variant">
-<span class="material-symbols-outlined">add</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Optional Assets Area -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary-dim">upload_file</span>
-<h3 class="font-headline font-bold">오디오 업로드</h3>
-</div>
-<p class="text-sm text-on-surface-variant leading-relaxed">커뮤니티가 당신의 영감을 들을 수 있도록 참조 클립을 추가하세요.</p>
-<button class="mt-2 w-full py-3 rounded-full border-2 border-dashed border-outline-variant/40 hover:border-primary-dim/60 hover:bg-primary/5 transition-all font-label text-sm">MP3 파일을 여기에 드롭하세요</button>
-</div>
-<div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant/10 flex flex-col gap-4">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-secondary">link</span>
-<h3 class="font-headline font-bold">Suno 곡 링크</h3>
-</div>
-<p class="text-sm text-on-surface-variant leading-relaxed">Suno AI URL을 붙여넣어 생성된 결과를 보여주세요.</p>
-<input class="mt-2 w-full bg-surface-container-lowest border border-outline-variant/30 rounded-full px-5 py-2.5 font-label text-sm focus:border-secondary focus:ring-0 outline-none" placeholder="https://suno.com/song/..." type="text"/>
-</div>
-</div>
-</div>
-<!-- Right Column: Sidebar (4 cols) -->
-<aside class="lg:col-span-4 flex flex-col gap-8">
-<div class="bg-surface-container rounded-lg p-8 border border-outline-variant/10 flex flex-col gap-8 shadow-xl">
-<div class="flex flex-col gap-6">
-<h2 class="text-2xl font-headline font-bold tracking-tight">게시 설정</h2>
-<!-- Title Input -->
-<div class="flex flex-col gap-2">
-<label class="text-xs font-label uppercase tracking-widest text-on-surface-variant">프롬프트 제목</label>
-<input class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg px-4 py-3 font-body focus:border-primary focus:ring-0 outline-none transition-all" placeholder="사이버네틱 세레나데" type="text"/>
-</div>
-<!-- Visibility Toggle -->
-<div class="flex items-center justify-between p-4 bg-surface-container-high rounded-lg">
-<div class="flex flex-col">
-<span class="font-headline font-semibold text-sm">공개 여부</span>
-<span class="text-xs text-on-surface-variant">커뮤니티에 공개됩니다</span>
-</div>
-<button id="toggleBtn" onclick="toggleVisibility()" class="w-12 h-6 bg-primary rounded-full relative flex items-center px-1 transition-all">
-<div id="toggleDot" class="w-4 h-4 bg-on-primary-container rounded-full ml-auto transition-all"></div>
-</button>
-</div>
-<!-- Options Grid -->
-<div class="grid grid-cols-2 gap-3">
-<button class="flex items-center justify-center gap-2 py-3 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-sm font-label"><span class="material-symbols-outlined text-[18px]">visibility</span> 미리보기</button>
-<button class="flex items-center justify-center gap-2 py-3 bg-surface-container-highest rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-all text-sm font-label"><span class="material-symbols-outlined text-[18px]">save</span> 임시 저장</button>
-</div>
-</div>
-<div class="h-px bg-outline-variant/10"></div>
-<!-- CTA Button -->
-<div class="flex flex-col gap-4">
-<button class="w-full py-5 bg-gradient-to-r from-primary to-primary-dim rounded-xl font-headline font-black text-on-primary-container text-lg shadow-[0_10px_40px_rgba(186,158,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all">커뮤니티에 공유하기</button>
-<p class="text-[10px] text-center text-on-surface-variant/50 font-label uppercase tracking-tighter">게시함으로써 귀하는 Sonic Nebula 약관에 동의하게 됩니다</p>
-</div>
-</div>
-<!-- Quick Tips Bento -->
-<div class="bg-secondary-container/10 border border-secondary/20 rounded-lg p-6 relative overflow-hidden group">
-<div class="absolute -bottom-4 -right-4 material-symbols-outlined text-7xl text-secondary/10 rotate-12 group-hover:rotate-0 transition-transform duration-500" style="font-variation-settings: 'FILL' 1;">lightbulb</div>
-<h4 class="font-headline font-bold text-secondary mb-2">음악 팁</h4>
-<p class="text-sm text-on-secondary-container leading-relaxed relative z-10">Suno AI 엔진이 프롬프트의 감정적 무게를 이해할 수 있도록 <span class="text-secondary font-bold">#거친</span> 또는 <span class="text-secondary font-bold">#미묘한</span>과 같은 구체적인 분위기 태그를 사용하세요.</p>
-</div>
-<!-- Preview Thumbnail Card -->
-<div class="bg-surface-container rounded-lg overflow-hidden border border-outline-variant/10 group cursor-pointer">
-<div class="h-48 relative bg-gradient-to-br from-[#0f1930] to-[#060e20] flex items-center justify-center overflow-hidden">
-  <svg class="w-full h-full absolute inset-0 opacity-60" viewBox="0 0 400 200" preserveAspectRatio="none">
-    <defs>
-      <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:#53ddfc;stop-opacity:0.6"/>
-        <stop offset="50%" style="stop-color:#ba9eff;stop-opacity:0.8"/>
-        <stop offset="100%" style="stop-color:#ff97b5;stop-opacity:0.6"/>
-      </linearGradient>
-    </defs>
-    <g stroke="url(#waveGrad)" fill="none" stroke-width="1.5">
-      <path d="M0,100 Q20,60 40,100 Q60,140 80,100 Q100,60 120,100 Q140,140 160,100 Q180,60 200,100 Q220,140 240,100 Q260,60 280,100 Q300,140 320,100 Q340,60 360,100 Q380,140 400,100"/>
-      <path d="M0,100 Q20,40 40,100 Q60,160 80,100 Q100,40 120,100 Q140,160 160,100 Q180,40 200,100 Q220,160 240,100 Q260,40 280,100 Q300,160 320,100 Q340,40 360,100 Q380,160 400,100" opacity="0.5"/>
-      <path d="M0,100 Q20,80 40,100 Q60,120 80,100 Q100,80 120,100 Q140,120 160,100 Q180,80 200,100 Q220,120 240,100 Q260,80 280,100 Q300,120 320,100 Q340,80 360,100 Q380,120 400,100" opacity="0.3"/>
-    </g>
-    <rect x="0" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="10" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="20" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="30" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="40" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="50" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="60" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
-    <rect x="70" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="80" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="90" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="100" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="110" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="120" y="25" width="4" height="150" rx="2" fill="url(#waveGrad)" opacity="1"/>
-    <rect x="130" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="140" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="150" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="160" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="170" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="180" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="190" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="200" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
-    <rect x="210" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="220" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="230" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="240" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="250" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="260" y="25" width="4" height="150" rx="2" fill="url(#waveGrad)" opacity="1"/>
-    <rect x="270" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="280" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="290" y="40" width="4" height="120" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="300" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="310" y="30" width="4" height="140" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="320" y="65" width="4" height="70" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-    <rect x="330" y="45" width="4" height="110" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="340" y="20" width="4" height="160" rx="2" fill="url(#waveGrad)" opacity="1"/>
-    <rect x="350" y="50" width="4" height="100" rx="2" fill="url(#waveGrad)" opacity="0.8"/>
-    <rect x="360" y="60" width="4" height="80" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="370" y="35" width="4" height="130" rx="2" fill="url(#waveGrad)" opacity="0.9"/>
-    <rect x="380" y="55" width="4" height="90" rx="2" fill="url(#waveGrad)" opacity="0.7"/>
-    <rect x="390" y="70" width="4" height="60" rx="2" fill="url(#waveGrad)" opacity="0.6"/>
-  </svg>
-</div>
-<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent pointer-events-none" style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to top, #0f1930, transparent)"></div>
-<div class="absolute bottom-4 left-4 flex items-center gap-2" style="position:absolute;bottom:1rem;left:1rem">
-<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px] font-bold">신규</div>
-<span class="font-headline font-bold text-lg">카드 미리보기</span>
-</div>
-</div>
-<div class="p-4 space-y-2">
-<div class="h-2 w-2/3 bg-outline-variant/30 rounded-full"></div>
-<div class="h-2 w-1/2 bg-outline-variant/20 rounded-full"></div>
-</div>
-</div>
-</aside>
-</main>
-<!-- Footer -->
-<footer class="w-full border-t border-white/5 py-12 bg-[#060e20] dark:bg-[#060e20]">
-<div class="flex flex-col items-center gap-6 w-full px-8 font-['Inter'] text-xs tracking-wide uppercase">
-<div class="flex gap-8">
-<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">정보</a>
-<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">약관</a>
-<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">디스코드</a>
-<a class="text-slate-500 hover:text-[#53ddfc] transition-colors" href="#">API</a>
-</div>
-<span class="font-bold text-[#53ddfc] text-xl tracking-tighter">SunoPrompt</span>
-<p class="text-slate-500 opacity-80">© 2024 SunoPrompt 커뮤니티. Suno AI에서 영감을 받았습니다.</p>
-</div>
+
+<!-- FOOTER -->
+<footer class="w-full border-t border-white/5 py-12 bg-[#060e20] mt-auto">
+  <div class="flex flex-col items-center gap-6 px-8 text-xs tracking-wide uppercase">
+    <div class="flex gap-8">
+      <a class="text-slate-500 hover:text-secondary transition-colors" href="#">정보</a>
+      <a class="text-slate-500 hover:text-secondary transition-colors" href="#">약관</a>
+      <a class="text-slate-500 hover:text-secondary transition-colors" href="#">디스코드</a>
+      <a class="text-slate-500 hover:text-secondary transition-colors" href="#">API</a>
+    </div>
+    <span class="font-headline font-bold text-secondary text-xl tracking-tighter">SunoPrompt</span>
+    <p class="text-slate-500">© 2024 SunoPrompt 커뮤니티. Suno AI에서 영감을 받았습니다.</p>
+  </div>
 </footer>
+
 <script>
-  function toggleTag(btn) {
-    const isActive = btn.classList.contains('active');
-    if (isActive) {
-      btn.classList.remove('active', 'bg-secondary-container', 'text-on-secondary-container', 'border-secondary/30');
-      btn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/30');
-    } else {
-      btn.classList.add('active', 'bg-secondary-container', 'text-on-secondary-container', 'border-secondary/30');
-      btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant/30');
-    }
-  }
+// ── DATA ──────────────────────────────────────────────
+const GENRES = ["K-pop","J-pop","Pop","Indie pop","Indie rock","Rock","Soft rock","Metal","Heavy metal","Jazz","Smooth jazz","Blues","Classical","Orchestral","R&B","Soul","Hip-hop","Rap","Trap","Lo-fi","Ambient","Electronic","EDM","House","Techno","Synthwave","Bossa nova","Reggae","Funk","Folk","Country","Gospel","Opera"];
+const MOODS = ["Uplifting","Euphoric","Joyful","Energetic","Powerful","Triumphant","Hopeful","Romantic","Dreamy","Peaceful","Serene","Warm","Melancholic","Sad","Lonely","Dark","Haunting","Tense","Mysterious","Eerie","Nostalgic","Reflective","Cinematic","Epic","Dramatic","Ethereal","Hypnotic","Groovy","Bittersweet"];
+const INSTRUMENTS = {"현악기":["Violin","Viola","Cello","Acoustic guitar","Electric guitar","Harp"],"건반":["Piano","Grand piano","Electric piano","Organ","Synthesizer","Harpsichord"],"타악기":["Drums","Drum kit","Percussion","Bongo","Marimba","Drum machine"],"관악기":["Flute","Saxophone","Trumpet","Trombone","French horn","Clarinet"],"베이스":["Bass guitar","Electric bass","808 bass","Synthesizer bass"]};
+const VOCAL_STYLES = ["Smooth","Breathy","Raspy","Powerful belting","Whispering","Falsetto","Operatic","Choir","Harmonies","Spoken word","Rap vocals"];
+const PRODUCTION = ["Lo-fi","Hi-fi","Vintage","Analog","Modern","Reverb-heavy","Distortion","Cinematic mix","Minimalist","Wall of sound","Stereo wide","Polished"];
+const ERA = ["60s Motown","70s funk","80s synth-pop","90s grunge","2000s emo","Retro","Contemporary","Futuristic"];
+const TEMPOS = [{label:"매우 느림",value:"very slow 50 BPM"},{label:"느림",value:"slow 70 BPM"},{label:"보통",value:"moderate 95 BPM"},{label:"경쾌함",value:"upbeat 125 BPM"},{label:"빠름",value:"fast 155 BPM"},{label:"매우 빠름",value:"very fast 180 BPM"}];
+const STRUCTURES = ["Intro","Verse","Pre-chorus","Chorus","Bridge","Outro","Instrumental break","Solo section","Build-up","Drop"];
+const LANGUAGES = ["English","Korean","Japanese","Spanish","French"];
 
-  function addTag() {
-    const label = prompt('새 태그 이름을 입력하세요:');
-    if (!label || !label.trim()) return;
-    const container = document.getElementById('tagContainer');
-    const addBtn = container.querySelector('button:last-child');
-    const newTag = document.createElement('button');
-    newTag.onclick = function() { toggleTag(this); };
-    newTag.className = 'tag-btn active px-5 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-sm font-medium border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all';
-    newTag.textContent = label.trim();
-    container.insertBefore(newTag, addBtn);
-  }
+const EXPLORE_DATA = [
+  {id:1,title:"사이버네틱 세레나데",prompt:"Synthwave, Dark, Electronic, Synthesizer, Haunting, female vocals",tags:["Synthwave","Dark","Electronic"],genre:"Electronic",likes:234,color:"#ba9eff"},
+  {id:2,title:"벚꽃 아래에서",prompt:"K-pop, Romantic, Dreamy, Piano, female vocals, lyrics in Korean",tags:["K-pop","Romantic","Piano"],genre:"K-pop",likes:189,color:"#53ddfc"},
+  {id:3,title:"새벽 3시의 도시",prompt:"Lo-fi, Jazz, Nostalgic, slow 70 BPM, Piano, Saxophone",tags:["Lo-fi","Jazz","Nostalgic"],genre:"Lo-fi",likes:312,color:"#ff97b5"},
+  {id:4,title:"불꽃의 전사",prompt:"Metal, Epic, Powerful, fast 155 BPM, Electric guitar, Drums",tags:["Metal","Epic","Powerful"],genre:"Metal",likes:156,color:"#f87171"},
+  {id:5,title:"바다의 기억",prompt:"Ambient, Peaceful, Orchestral, Serene, Harp, Violin",tags:["Ambient","Peaceful","Orchestral"],genre:"Ambient",likes:278,color:"#34d399"},
+  {id:6,title:"거리의 리듬",prompt:"Hip-hop, Groovy, Uplifting, 808 bass, Drum machine, male vocals",tags:["Hip-hop","Groovy","Uplifting"],genre:"Hip-hop",likes:445,color:"#fbbf24"},
+  {id:7,title:"달빛 왈츠",prompt:"Classical, Romantic, Warm, Piano, Violin, slow 70 BPM",tags:["Classical","Romantic","Piano"],genre:"Classical",likes:203,color:"#818cf8"},
+  {id:8,title:"전자 영혼",prompt:"EDM, Euphoric, Energetic, Synthesizer, upbeat 125 BPM, Hi-fi",tags:["EDM","Euphoric","Energetic"],genre:"Electronic",likes:567,color:"#fb923c"},
+];
 
-  let isPublic = true;
-  function toggleVisibility() {
-    isPublic = !isPublic;
-    const btn = document.getElementById('toggleBtn');
-    const dot = document.getElementById('toggleDot');
-    if (isPublic) {
-      btn.classList.add('bg-primary');
-      btn.classList.remove('bg-outline-variant');
-      dot.classList.add('ml-auto');
-      dot.classList.remove('ml-0');
-    } else {
-      btn.classList.remove('bg-primary');
-      btn.classList.add('bg-outline-variant');
-      dot.classList.remove('ml-auto');
-      dot.classList.add('ml-0');
-    }
+const EXPLORE_GENRES = ["전체","K-pop","Electronic","Lo-fi","Metal","Ambient","Hip-hop","Classical"];
+
+// ── STATE ─────────────────────────────────────────────
+let state = {hasLyrics:null,vocalGender:null,genres:[],era:[],moods:[],tempo:null,instruments:[],vocalStyles:[],language:null,production:[],structure:[],isPublic:true};
+let activeGenreFilter = "전체";
+
+// ── NAVIGATION ────────────────────────────────────────
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.getElementById('page-' + page).style.display = 'block';
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const nl = document.getElementById('nav-' + page);
+  if (nl) nl.classList.add('active');
+  window.scrollTo(0,0);
+  if (page === 'library') renderLibrary();
+  if (page === 'explore') renderExplore();
+  if (page === 'home') renderHomeFeatured();
+}
+
+// ── TAG RENDERING ─────────────────────────────────────
+const TAG_COLORS = {
+  purple:{on:"bg-purple-600 text-white border-purple-500",off:"border-purple-900 text-purple-300 hover:border-purple-500 hover:text-white"},
+  pink:  {on:"bg-pink-600 text-white border-pink-500",    off:"border-pink-900 text-pink-300 hover:border-pink-500 hover:text-white"},
+  cyan:  {on:"bg-cyan-600 text-white border-cyan-500",    off:"border-cyan-900 text-cyan-300 hover:border-cyan-500 hover:text-white"},
+  amber: {on:"bg-amber-600 text-white border-amber-500",  off:"border-amber-900 text-amber-300 hover:border-amber-500 hover:text-white"},
+  green: {on:"bg-emerald-600 text-white border-emerald-500",off:"border-emerald-900 text-emerald-300 hover:border-emerald-500 hover:text-white"},
+  blue:  {on:"bg-blue-600 text-white border-blue-500",    off:"border-blue-900 text-blue-300 hover:border-blue-500 hover:text-white"},
+  rose:  {on:"bg-rose-600 text-white border-rose-500",    off:"border-rose-900 text-rose-300 hover:border-rose-500 hover:text-white"},
+};
+
+function tagBase(color, selected) {
+  const c = TAG_COLORS[color];
+  return `px-3 py-1 text-xs rounded-full border transition-all cursor-pointer select-none ${selected ? c.on : c.off}`;
+}
+
+function makeTagGroup(containerId, items, stateKey, color) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  items.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = tagBase(color, false);
+    btn.textContent = item;
+    btn.addEventListener('click', () => {
+      const arr = state[stateKey];
+      const i = arr.indexOf(item);
+      if (i === -1) arr.push(item); else arr.splice(i, 1);
+      btn.className = tagBase(color, arr.includes(item));
+      updatePrompt();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function makeTempoTags() {
+  const el = document.getElementById('tempo-tags');
+  el.innerHTML = '';
+  TEMPOS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = tagBase('amber', false);
+    btn.textContent = t.label;
+    btn.addEventListener('click', () => {
+      state.tempo = state.tempo === t.value ? null : t.value;
+      el.querySelectorAll('button').forEach((b,i) => {
+        b.className = tagBase('amber', TEMPOS[i].value === state.tempo);
+      });
+      updatePrompt();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function makeLanguageTags() {
+  const el = document.getElementById('language-tags');
+  el.innerHTML = '';
+  LANGUAGES.forEach(lang => {
+    const btn = document.createElement('button');
+    btn.className = tagBase('green', false);
+    btn.textContent = lang;
+    btn.addEventListener('click', () => {
+      state.language = state.language === lang ? null : lang;
+      el.querySelectorAll('button').forEach((b,i) => {
+        b.className = tagBase('green', LANGUAGES[i] === state.language);
+      });
+      updatePrompt();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function makeInstruments() {
+  const el = document.getElementById('instrument-sections');
+  el.innerHTML = '';
+  Object.entries(INSTRUMENTS).forEach(([cat, items]) => {
+    const wrap = document.createElement('div');
+    const lbl = document.createElement('div');
+    lbl.className = 'text-[10px] text-on-surface-variant mb-2 tracking-widest uppercase';
+    lbl.textContent = cat;
+    const tags = document.createElement('div');
+    tags.className = 'flex flex-wrap gap-2';
+    items.forEach(item => {
+      const btn = document.createElement('button');
+      btn.className = tagBase('cyan', false);
+      btn.textContent = item;
+      btn.addEventListener('click', () => {
+        const arr = state.instruments;
+        const i = arr.indexOf(item);
+        if (i === -1) arr.push(item); else arr.splice(i, 1);
+        btn.className = tagBase('cyan', arr.includes(item));
+        updatePrompt();
+      });
+      tags.appendChild(btn);
+    });
+    wrap.appendChild(lbl);
+    wrap.appendChild(tags);
+    el.appendChild(wrap);
+  });
+}
+
+function initBuilder() {
+  makeTagGroup('genre-tags', GENRES, 'genres', 'purple');
+  makeTagGroup('era-tags', ERA, 'era', 'blue');
+  makeTagGroup('mood-tags', MOODS, 'moods', 'pink');
+  makeTagGroup('vocal-style-tags', VOCAL_STYLES, 'vocalStyles', 'rose');
+  makeTagGroup('production-tags', PRODUCTION, 'production', 'amber');
+  makeTagGroup('structure-tags', STRUCTURES, 'structure', 'green');
+  makeTempoTags();
+  makeInstruments();
+  makeLanguageTags();
+}
+
+// ── LYRICS / GENDER ───────────────────────────────────
+function setHasLyrics(val) {
+  state.hasLyrics = state.hasLyrics === val ? null : val;
+  const yBtn = document.getElementById('btn-lyrics-yes');
+  const nBtn = document.getElementById('btn-lyrics-no');
+  yBtn.style.cssText = state.hasLyrics === true ? 'background:#7c3aed;border-color:#7c3aed;color:#fff' : '';
+  nBtn.style.cssText = state.hasLyrics === false ? 'background:#0e7490;border-color:#0e7490;color:#fff' : '';
+  const show = state.hasLyrics !== false;
+  ['section-vocal-gender','section-vocal-style','section-language'].forEach(id => {
+    document.getElementById(id).style.display = show ? '' : 'none';
+  });
+  updatePrompt();
+}
+
+function setVocalGender(val) {
+  state.vocalGender = state.vocalGender === val ? null : val;
+  const mBtn = document.getElementById('btn-gender-male');
+  const fBtn = document.getElementById('btn-gender-female');
+  mBtn.style.cssText = state.vocalGender === 'male' ? 'background:#be185d;border-color:#be185d;color:#fff' : '';
+  fBtn.style.cssText = state.vocalGender === 'female' ? 'background:#be185d;border-color:#be185d;color:#fff' : '';
+  updatePrompt();
+}
+
+// ── PROMPT ────────────────────────────────────────────
+function buildPrompt() {
+  const parts = [];
+  if (state.genres.length) parts.push(state.genres.join(', '));
+  if (state.era.length) parts.push(state.era.join(', '));
+  if (state.moods.length) parts.push(state.moods.join(', '));
+  if (state.tempo) parts.push(state.tempo);
+  if (state.instruments.length) parts.push(state.instruments.join(', '));
+  if (state.production.length) parts.push(state.production.join(', '));
+  const vp = [];
+  if (state.hasLyrics === false) { vp.push('instrumental, no vocals'); }
+  else {
+    if (state.vocalGender === 'male') vp.push('male vocals');
+    else if (state.vocalGender === 'female') vp.push('female vocals');
+    if (state.vocalStyles.length) vp.push(state.vocalStyles.join(', '));
+    if (state.language) vp.push('lyrics in ' + state.language);
   }
+  if (vp.length) parts.push(vp.join(', '));
+  if (state.structure.length) parts.push(state.structure.join(', '));
+  return parts.join(', ');
+}
+
+function updatePrompt() {
+  const prompt = buildPrompt();
+  const count = prompt ? prompt.split(',').filter(Boolean).length : 0;
+  const out = document.getElementById('prompt-output');
+  if (prompt) {
+    out.style.cssText = 'color:#c4b5fd;font-style:normal';
+    out.textContent = prompt;
+  } else {
+    out.style.cssText = 'color:#4b5563;font-style:italic';
+    out.innerHTML = '왼쪽에서 옵션을 선택하면<br/>프롬프트가 자동으로 생성됩니다';
+  }
+  // Quality
+  const wc = document.getElementById('word-count');
+  const ql = document.getElementById('quality-label');
+  const qb = document.getElementById('quality-bar');
+  wc.textContent = count;
+  if (count === 0) { wc.style.color='#6b7280'; ql.style.color='#6b7280'; ql.textContent='선택 없음'; qb.style.width='0%'; qb.style.background='#ef4444'; }
+  else if (count <= 3) { wc.style.color='#f87171'; ql.style.color='#f87171'; ql.textContent='더 추가하세요'; qb.style.width=(count/8*100)+'%'; qb.style.background='#ef4444'; }
+  else if (count <= 7) { wc.style.color='#34d399'; ql.style.color='#34d399'; ql.textContent='최적 범위'; qb.style.width=(count/8*100)+'%'; qb.style.background='#10b981'; }
+  else { wc.style.color='#fbbf24'; ql.style.color='#fbbf24'; ql.textContent='너무 많음'; qb.style.width='100%'; qb.style.background='#f59e0b'; }
+  // Buttons
+  const cb = document.getElementById('copy-btn');
+  const sb = document.getElementById('save-btn');
+  if (prompt) {
+    cb.disabled = false; cb.style.cssText = 'background:#7c3aed;color:#fff;cursor:pointer';
+    sb.disabled = false; sb.style.cssText = 'background:transparent;color:#a3aac4;cursor:pointer';
+  } else {
+    cb.disabled = true; cb.style.cssText = 'background:#192540;color:#4b5563;cursor:default';
+    sb.disabled = true; sb.style.cssText = 'background:#192540;color:#4b5563;cursor:default';
+  }
+}
+
+function copyPrompt() {
+  const p = buildPrompt();
+  if (!p) return;
+  navigator.clipboard.writeText(p);
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = '✓ 복사됨!';
+  setTimeout(() => btn.textContent = '📋 프롬프트 복사', 2000);
+}
+
+function saveToLibrary() {
+  const p = buildPrompt();
+  if (!p) return;
+  const title = document.getElementById('prompt-title').value.trim() || '제목 없음';
+  const saved = JSON.parse(localStorage.getItem('sunoPrompts') || '[]');
+  saved.unshift({id:Date.now(), title, prompt:p, tags:[...state.genres,...state.moods].slice(0,3), createdAt:new Date().toLocaleDateString('ko-KR')});
+  localStorage.setItem('sunoPrompts', JSON.stringify(saved));
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '✓ 저장됨!';
+  setTimeout(() => btn.textContent = '🔖 라이브러리에 저장', 2000);
+}
+
+function sharePrompt() {
+  const p = buildPrompt();
+  if (!p) { alert('먼저 옵션을 선택해주세요.'); return; }
+  alert('커뮤니티에 공유되었습니다! (데모)');
+}
+
+function toggleVisibility() {
+  state.isPublic = !state.isPublic;
+  const btn = document.getElementById('visibility-toggle');
+  const dot = document.getElementById('visibility-dot');
+  btn.style.background = state.isPublic ? '#ba9eff' : '#40485d';
+  dot.style.marginLeft = state.isPublic ? 'auto' : '0';
+}
+
+function resetAll() {
+  state = {hasLyrics:null,vocalGender:null,genres:[],era:[],moods:[],tempo:null,instruments:[],vocalStyles:[],language:null,production:[],structure:[],isPublic:true};
+  initBuilder();
+  ['btn-lyrics-yes','btn-lyrics-no','btn-gender-male','btn-gender-female'].forEach(id => {
+    document.getElementById(id).style.cssText = '';
+  });
+  ['section-vocal-gender','section-vocal-style','section-language'].forEach(id => {
+    document.getElementById(id).style.display = '';
+  });
+  updatePrompt();
+}
+
+// ── LIBRARY ───────────────────────────────────────────
+function renderLibrary() {
+  const saved = JSON.parse(localStorage.getItem('sunoPrompts') || '[]');
+  const grid = document.getElementById('library-grid');
+  const empty = document.getElementById('library-empty');
+  if (!saved.length) { grid.innerHTML=''; grid.style.display='none'; empty.style.display='block'; return; }
+  grid.style.display=''; empty.style.display='none';
+  grid.innerHTML = saved.map(item => `
+    <div class="bg-surface-container rounded-lg border border-outline-variant/10 p-6 flex flex-col gap-4 hover:border-primary/20 transition-all group">
+      <div class="flex items-start justify-between gap-2">
+        <h3 class="font-headline font-bold text-lg leading-tight">${esc(item.title)}</h3>
+        <button onclick="deletePrompt(${item.id})" class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-500/10 rounded flex-shrink-0">
+          <span class="material-symbols-outlined text-red-400 text-[18px]">delete</span>
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-1">${(item.tags||[]).map(t=>`<span class="text-[11px] bg-primary/10 text-primary border border-primary/20 rounded-full px-2 py-0.5">${esc(t)}</span>`).join('')}</div>
+      <p class="text-xs text-on-surface-variant line-clamp-3 leading-relaxed">${esc(item.prompt)}</p>
+      <div class="flex items-center justify-between mt-auto pt-3 border-t border-outline-variant/10">
+        <span class="text-xs text-on-surface-variant">${item.createdAt}</span>
+        <button onclick="copyText('${encodeURIComponent(item.prompt)}')" class="text-xs text-primary hover:opacity-70 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">content_copy</span> 복사
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deletePrompt(id) {
+  let saved = JSON.parse(localStorage.getItem('sunoPrompts') || '[]');
+  localStorage.setItem('sunoPrompts', JSON.stringify(saved.filter(x => x.id !== id)));
+  renderLibrary();
+}
+
+function copyText(encoded) {
+  navigator.clipboard.writeText(decodeURIComponent(encoded));
+}
+
+// ── EXPLORE ───────────────────────────────────────────
+function initExploreFilter() {
+  const bar = document.getElementById('genreFilterBar');
+  bar.innerHTML = '';
+  EXPLORE_GENRES.forEach(g => {
+    const btn = document.createElement('button');
+    btn.textContent = g;
+    btn.dataset.g = g;
+    btn.className = genreFilterClass(g === activeGenreFilter);
+    btn.addEventListener('click', () => {
+      activeGenreFilter = g;
+      bar.querySelectorAll('button').forEach(b => b.className = genreFilterClass(b.dataset.g === g));
+      renderExplore();
+    });
+    bar.appendChild(btn);
+  });
+}
+
+function genreFilterClass(active) {
+  return active
+    ? 'px-4 py-1.5 rounded-full text-xs border border-primary/40 bg-primary/10 text-primary transition-all'
+    : 'px-4 py-1.5 rounded-full text-xs border border-outline-variant/30 text-on-surface-variant hover:border-primary/40 transition-all';
+}
+
+function renderExplore() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const items = EXPLORE_DATA.filter(p => {
+    const matchGenre = activeGenreFilter === '전체' || p.genre === activeGenreFilter || p.tags.includes(activeGenreFilter);
+    const matchSearch = !q || p.title.toLowerCase().includes(q) || p.prompt.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q));
+    return matchGenre && matchSearch;
+  });
+  const grid = document.getElementById('exploreGrid');
+  const empty = document.getElementById('exploreEmpty');
+  if (!items.length) { grid.innerHTML=''; grid.style.display='none'; empty.style.display='block'; return; }
+  grid.style.display=''; empty.style.display='none';
+  grid.innerHTML = items.map(p => {
+    const bars = Array.from({length:22},()=>Math.round(Math.random()*60+20));
+    const wave = bars.map(h=>`<div style="height:${h}%;width:3px;background:${p.color};border-radius:2px;opacity:0.75;flex-shrink:0"></div>`).join('');
+    const tagHtml = p.tags.slice(0,3).map(t=>`<span class="text-[10px] bg-primary/10 text-primary border border-primary/20 rounded-full px-2 py-0.5">${t}</span>`).join('');
+    return `
+    <div class="bg-surface-container rounded-lg overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col">
+      <div style="height:88px;background:linear-gradient(135deg,#0f1930,#060e20);display:flex;align-items:flex-end;padding:8px 10px;gap:2px;overflow:hidden">${wave}</div>
+      <div class="p-4 flex flex-col gap-2 flex-1">
+        <h3 class="font-headline font-bold">${esc(p.title)}</h3>
+        <div class="flex flex-wrap gap-1">${tagHtml}</div>
+        <p class="text-xs text-on-surface-variant line-clamp-2 leading-relaxed">${esc(p.prompt)}</p>
+        <div class="flex items-center justify-between mt-auto pt-3 border-t border-outline-variant/10">
+          <span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">favorite</span>${p.likes}</span>
+          <button onclick="copyText('${encodeURIComponent(p.prompt)}')" class="text-xs text-primary hover:opacity-70 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">content_copy</span>복사
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── HOME FEATURED ─────────────────────────────────────
+function renderHomeFeatured() {
+  const featured = EXPLORE_DATA.slice(0,3);
+  const el = document.getElementById('home-featured');
+  if (!el) return;
+  el.innerHTML = featured.map(p => {
+    const bars = Array.from({length:28},()=>Math.round(Math.random()*60+20));
+    const wave = bars.map(h=>`<div style="height:${h}%;width:4px;background:${p.color};border-radius:2px;opacity:0.8;flex-shrink:0"></div>`).join('');
+    const tagHtml = p.tags.slice(0,3).map(t=>`<span class="text-[11px] bg-primary/10 text-primary border border-primary/20 rounded-full px-2 py-0.5">${t}</span>`).join('');
+    return `
+    <div class="bg-surface-container rounded-lg overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all group cursor-pointer" onclick="navigate('explore')">
+      <div style="height:120px;background:linear-gradient(135deg,#0f1930,#060e20);display:flex;align-items:flex-end;padding:10px 14px;gap:3px;overflow:hidden">${wave}</div>
+      <div class="p-5">
+        <h3 class="font-headline font-bold text-lg mb-2">${esc(p.title)}</h3>
+        <div class="flex flex-wrap gap-1 mb-3">${tagHtml}</div>
+        <div class="flex items-center justify-between text-xs text-on-surface-variant">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">favorite</span>${p.likes}</span>
+          <span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-[14px]">content_copy</span>복사</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  initBuilder();
+  initExploreFilter();
+  navigate('home');
+});
 </script>
-</body></html>
+</body>
+</html>
